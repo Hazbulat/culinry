@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CulinaryPro - Платформа кулинарных мастер-классов</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-utensils"></i> CulinaryPro</h1>
+      <div id="auth-status"></div>
+    </header>
+
+    <div id="auth-section">
+      <!-- Форма регистрации -->
+      <div id="register-card" class="auth-card">
+        <h2><i class="fas fa-user-plus"></i> Регистрация</h2>
+        <form id="register-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-name"><i class="fas fa-user"></i> ФИО</label>
+              <input type="text" id="reg-name" placeholder="Иванов Иван Иванович" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-phone"><i class="fas fa-phone"></i> Телефон</label>
+              <input type="tel" id="reg-phone" placeholder="+7 (999) 123-45-67" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="reg-email"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="reg-email" placeholder="example@mail.ru" required>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-password"><i class="fas fa-lock"></i> Пароль</label>
+              <input type="password" id="reg-password" minlength="6" placeholder="Не менее 6 символов" required>
+            </div>
+            <div class="form-group">
+              <label for="reg-confirm"><i class="fas fa-lock"></i> Подтверждение</label>
+              <input type="password" id="reg-confirm" minlength="6" placeholder="Повторите пароль" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="reg-preferences"><i class="fas fa-heart"></i> Кулинарные предпочтения</label>
+            <textarea id="reg-preferences" rows="3" placeholder="Итальянская кухня, десерты, вегетарианские блюда..."></textarea>
+          </div>
+          
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="reg-agreement" required>
+            <label for="reg-agreement">Я согласен с <a href="#">правилами платформы</a> и обработкой персональных данных</label>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Зарегистрироваться
+          </button>
+          
+          <div class="auth-switch">
+            Уже есть аккаунт? <a href="#" id="show-login">Войти</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Форма входа -->
+      <div id="login-card" class="auth-card" style="display: none;">
+        <h2><i class="fas fa-sign-in-alt"></i> Вход в систему</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+            <input type="email" id="email" placeholder="Ваш email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password"><i class="fas fa-lock"></i> Пароль</label>
+            <input type="password" id="password" placeholder="Ваш пароль" required>
+            <a href="#" class="forgot-password">Забыли пароль?</a>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Войти
+          </button>
+          
+          <div class="auth-switch">
+            Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Основное приложение (скрыто до авторизации) -->
+    <div id="app-section" style="display:none;">
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="classes">
+          <i class="fas fa-chalkboard-teacher"></i> Мастер-классы
+        </button>
+        <button class="tab-btn" data-tab="recipes">
+          <i class="fas fa-book-open"></i> Рецепты
+        </button>
+        <button class="tab-btn" data-tab="my-classes">
+          <i class="fas fa-calendar-check"></i> Мои записи
+        </button>
+        <button class="tab-btn" data-tab="profile">
+          <i class="fas fa-user"></i> Профиль
+        </button>
+      </nav>
+
+      <!-- Вкладка мастер-классов -->
+      <div id="classes-tab" class="tab-content active">
+        <div class="section-header">
+          <h2><i class="fas fa-chalkboard-teacher"></i> Ближайшие мастер-классы</h2>
+          <div class="header-actions">
+
+            <button id="add-class-btn" class="btn-icon" title="Добавить мастер-класс">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button id="refresh-classes" class="btn-icon" title="Обновить список">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filters">
+          <select id="cuisine-filter">
+            <option value="">Все кухни мира</option>
+            <option value="italian">Итальянская</option>
+            <option value="japanese">Японская</option>
+            <option value="french">Французская</option>
+            <!-- Другие опции -->
+          </select>
+          <select id="type-filter">
+            <option value="">Все типы</option>
+            <option value="main">Основные блюда</option>
+            <option value="dessert">Десерты</option>
+            <option value="bakery">Выпечка</option>
+            <!-- Другие опции -->
+          </select>
+          <select id="difficulty-filter">
+            <option value="">Любой уровень</option>
+            <option value="beginner">Начинающий</option>
+            <option value="intermediate">Средний</option>
+            <option value="advanced">Продвинутый</option>
+          </select>
+        </div>
+
+        <!-- Форма добавления мастер-класса -->
+        <div id="add-class-form" class="class-form-container" style="display: none;">
+          <h3><i class="fas fa-plus-circle"></i> Новый мастер-класс</h3>
+          <form id="class-form">
+            <div class="form-group">
+              <label for="class-title"><i class="fas fa-heading"></i> Название</label>
+              <input type="text" id="class-title" required>
+            </div>
+            <div class="form-group">
+              <label for="class-description"><i class="fas fa-align-left"></i> Описание</label>
+              <textarea id="class-description" rows="3" required></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="class-date"><i class="fas fa-calendar-day"></i> Дата и время</label>
+                <input type="datetime-local" id="class-date" required>
+              </div>
+              <div class="form-group">
+                <label for="class-duration"><i class="fas fa-clock"></i> Длительность (мин)</label>
+                <input type="number" id="class-duration" min="30" step="30" value="90" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="class-cuisine"><i class="fas fa-globe"></i> Кухня</label>
+                <select id="class-cuisine" required>
+                  <option value="italian">Итальянская</option>
+                  <option value="japanese">Японская</option>
+                  <option value="french">Французская</option>
+                  <!-- Другие опции -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="class-type"><i class="fas fa-utensils"></i> Тип</label>
+                <select id="class-type" required>
+                  <option value="main">Основные блюда</option>
+                  <option value="dessert">Десерты</option>
+                  <option value="bakery">Выпечка</option>
+                  <!-- Другие опции -->
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="class-difficulty"><i class="fas fa-signal"></i> Сложность</label>
+                <select id="class-difficulty" required>
+                  <option value="beginner">Начинающий</option>
+                  <option value="intermediate">Средний</option>
+                  <option value="advanced">Продвинутый</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="class-max-participants"><i class="fas fa-users"></i> Макс. участников</label>
+                <input type="number" id="class-max-participants" min="1" value="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="class-price"><i class="fas fa-tag"></i> Стоимость (₽)</label>
+              <input type="number" id="class-price" min="0" step="100" required>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Сохранить
+              </button>
+              <button type="button" id="cancel-class-btn" class="btn btn-secondary">
+                Отмена
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div id="classes-list" class="classes-grid"></div>
+      </div>
+
+      <!-- Вкладка рецептов -->
+      <div id="recipes-tab" class="tab-content">
+        <div class="section-header">
+          <h2><i class="fas fa-book-open"></i> Рецепты</h2>
+          <div class="header-actions">
+
+            <button id="add-recipe-btn" class="btn-icon" title="Добавить рецепт">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button id="refresh-recipes" class="btn-icon" title="Обновить список">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </div>
+        <div id="recipes-list" class="recipes-grid"></div>
+      </div>
+
+      <!-- Вкладка моих записей -->
+      <div id="my-classes-tab" class="tab-content">
+        <div class="section-header">
+          <h2><i class="fas fa-calendar-check"></i> Мои мастер-классы</h2>
+          <button id="refresh-my-classes" class="btn-icon" title="Обновить список">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+        <div id="my-classes-list" class="classes-grid"></div>
+      </div>
+
+      <!-- Вкладка профиля -->
+      <div id="profile-tab" class="tab-content">
+        <div class="profile-header">
+          <h2><i class="fas fa-user"></i> Мой профиль</h2>
+          <button id="edit-profile-btn" class="btn-icon" title="Редактировать профиль">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+        <div id="profile-info" class="profile-card"></div>
+        
+
+        <h3><i class="fas fa-history"></i> История посещений</h3>
+        <div id="class-history" class="classes-grid"></div>
+
+
+      </div>
+    </div>
+        
+    <!-- Уведомления -->
+    <div id="notification" class="notification"></div>
+  </div>
+
+  <!-- Чат с поддержкой -->
+  <div id="chatbot-container">
+    <div id="chatbot-header">
+      <span>Помощник шеф-повара</span>
+      <button id="chatbot-close" type="button">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input">
+      <input type="text" id="chatbot-user-input" placeholder="Задайте вопрос о кулинарии...">
+      <button id="chatbot-send" type="button">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+  <button id="chatbot-toggle" class="chatbot-icon" type="button">
+    <i class="fas fa-comments"></i>
+  </button>
+
+  <script src="script.local.js"></script>
+</body>
+</html>
